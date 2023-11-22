@@ -6,12 +6,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install wget
 RUN apt-get update && \
-    apt-get install software-properties-common wget -y
+    apt-get install -y software-properties-common wget unzip && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install miniconda
 ENV CONDA_DIR /opt/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-     /bin/bash ~/miniconda.sh -b -p /opt/conda && chmod -R a+rwX /opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+     /bin/bash /tmp/miniconda.sh -b -p /opt/conda && chmod -R a+rwX /opt/conda
 
 # Put conda in path so we can use conda activate
 ENV PATH=$CONDA_DIR/bin:$PATH
@@ -26,11 +27,11 @@ ENV PATH=/opt/conda/envs/genelab-utils/bin:$PATH
 RUN pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates
 
 # Download and unzip the workflow files
-RUN wget https://github.com/nasa/GeneLab_Data_Processing/releases/download/SW_AmpIllumina-A_1.2.0/SW_AmpIllumina-A_1.2.0.zip -O ~/SW_AmpIllumina-A_1.2.0.zip && \
-    unzip ~/SW_AmpIllumina-A_1.2.0.zip && \
-    rm ~/SW_AmpIllumina-A_1.2.0.zip
+RUN wget https://github.com/nasa/GeneLab_Data_Processing/releases/download/SW_AmpIllumina-A_1.2.0/SW_AmpIllumina-A_1.2.0.zip -O /tmp/SW_AmpIllumina-A_1.2.0.zip && \
+    unzip /tmp/SW_AmpIllumina-A_1.2.0.zip -d /opt && \
+    rm /tmp/SW_AmpIllumina-A_1.2.0.zip
 
 # Set the working directory to the workflow directory
-WORKDIR ~/SW_AmpIllumina-A_1.2.0
+WORKDIR /opt/SW_AmpIllumina-A_1.2.0
 
 
