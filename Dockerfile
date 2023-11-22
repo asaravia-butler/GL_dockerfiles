@@ -8,7 +8,7 @@ RUN conda install -c conda-forge mamba
 RUN mamba create -n genelab-utils -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.1.02' git pip
 
 # Activate the genelab-utils environment and install dp-tools
-RUN source activate genelab-utils
+RUN conda activate genelab-utils
 RUN pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates
 
 # Download and unzip the workflow files
