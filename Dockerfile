@@ -5,9 +5,10 @@ FROM conda/miniconda3
 RUN conda install -c conda-forge mamba
 
 # Create the genelab-utils conda environment
-RUN mamba create -n genelab-utils -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.1.02' git pip
+RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.1.02' git pip
 
 # Activate the genelab-utils environment and install dp-tools
+RUN conda init bash
 RUN conda activate genelab-utils
 RUN pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates
 
