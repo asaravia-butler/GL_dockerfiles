@@ -4,13 +4,10 @@ FROM conda/miniconda3
 # Install mamba in the base environment
 RUN conda install -c conda-forge mamba
 
-# Create the genelab-utils conda environment
-RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.1.02' git pip
-
-# Activate the genelab-utils environment and install dp-tools
-RUN conda init bash
-RUN conda activate genelab-utils
-RUN pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates
+# Create the genelab-utils conda environment and install dp-tools
+RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.1.02' git pip && \
+    echo "source activate genelab-utils" > ~/.bashrc && \
+    /bin/bash -c "source activate genelab-utils && pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates"
 
 # Download and unzip the workflow files
 RUN wget https://github.com/nasa/GeneLab_Data_Processing/releases/download/SW_AmpIllumina-A_1.2.0/SW_AmpIllumina-A_1.2.0.zip && \
@@ -22,3 +19,4 @@ WORKDIR /SW_AmpIllumina-A_1.2.0
 
 # Set the default command to activate the environment
 CMD ["/bin/bash"]
+
