@@ -1,3 +1,9 @@
+# Use Ubuntu as the base image
+FROM ubuntu:23.10
+
+# Avoid prompts from apt
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Install wget
 RUN apt-get update && \
     apt-get install software-properties-common wget -y
