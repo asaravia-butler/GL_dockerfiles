@@ -1,5 +1,5 @@
 # Use Ubuntu as the base image
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
 # Use bash for all commands
 SHELL ["/bin/bash", "-c"]
@@ -9,12 +9,12 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies
 RUN apt-get update && \
-    apt-get install -y software-properties-common wget unzip && \
+    apt-get install -y --no-install-recommends software-properties-common wget unzip && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Miniconda
 ENV CONDA_DIR=/opt/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+RUN wget --retry-connrefused --waitretry=5 --timeout=30 --tries=5 --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh -O /tmp/miniconda.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/conda && chmod -R a+rwX /opt/conda
 
 # Add Conda to PATH
