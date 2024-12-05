@@ -1,5 +1,5 @@
 # Use Ubuntu as the base image
-FROM ubuntu:23.10
+FROM ubuntu:latest
 
 # Use bash for all commands
 SHELL ["/bin/bash", "-c"]
