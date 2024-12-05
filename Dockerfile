@@ -14,7 +14,7 @@ RUN apt-get update && \
 
 # Install Miniconda
 ENV CONDA_DIR /opt/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/conda && chmod -R a+rwX /opt/conda
 
 # Add Conda to PATH
@@ -27,9 +27,12 @@ RUN /opt/conda/bin/conda init bash
 RUN conda install -y -c conda-forge mamba
 
 # Create genelab-utils environment and install dependencies
-RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.3.35' git pip
+RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.3.35'
 
-# Activate environment for pip installs
+# Activate genelab-utils environment and make it the default
+RUN echo "conda activate genelab-utils" >> ~/.bashrc
+
+# Install additional dependencies within the environment
 RUN /opt/conda/bin/conda run -n genelab-utils pip install --upgrade pyOpenSSL
 RUN /opt/conda/bin/conda run -n genelab-utils pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates
 
@@ -40,5 +43,8 @@ RUN wget https://github.com/nasa/GeneLab_Data_Processing/releases/download/SW_Am
 
 # Set the working directory to the workflow directory
 WORKDIR /opt/SW_AmpIllumina-B_1.2.3
+
+# Default shell ensures the Conda environment is active
+CMD ["bash"]
 
 
