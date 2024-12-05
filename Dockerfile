@@ -21,17 +21,18 @@ ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda install -c conda-forge mamba
 
 # Create the genelab-utils conda environment and install dp-tools
-RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.1.02' git pip
+RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.3.35' git pip
 RUN echo "source activate genelab-utils" > ~/.bashrc
 ENV PATH=/opt/conda/envs/genelab-utils/bin:$PATH
+RUN pip install --upgrade pyOpenSSL
 RUN pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates
 
 # Download and unzip the workflow files
-RUN wget https://github.com/nasa/GeneLab_Data_Processing/releases/download/SW_AmpIllumina-A_1.2.0/SW_AmpIllumina-A_1.2.0.zip -O /tmp/SW_AmpIllumina-A_1.2.0.zip && \
-    unzip /tmp/SW_AmpIllumina-A_1.2.0.zip -d /opt && \
-    rm /tmp/SW_AmpIllumina-A_1.2.0.zip
+RUN wget https://github.com/nasa/GeneLab_Data_Processing/releases/download/SW_AmpIllumina-B_1.2.3/SW_AmpIllumina-B_1.2.3.zip -O /tmp/SW_AmpIllumina-B_1.2.3.zip && \
+    unzip /tmp/SW_AmpIllumina-B_1.2.3.zip -d /opt && \
+    rm /tmp/SW_AmpIllumina-B_1.2.3.zip
 
 # Set the working directory to the workflow directory
-WORKDIR /opt/SW_AmpIllumina-A_1.2.0
+WORKDIR /opt/SW_AmpIllumina-B_1.2.3
 
 
