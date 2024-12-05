@@ -1,29 +1,35 @@
 # Use Ubuntu as the base image
 FROM ubuntu:23.10
 
+# Use bash for all commands
+SHELL ["/bin/bash", "-c"]
+
 # Avoid prompts from apt
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install wget
+# Install system dependencies
 RUN apt-get update && \
     apt-get install -y software-properties-common wget unzip && \
     rm -rf /var/lib/apt/lists/*
 
-# Install miniconda
+# Install Miniconda
 ENV CONDA_DIR /opt/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
-     /bin/bash /tmp/miniconda.sh -b -p /opt/conda && chmod -R a+rwX /opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    /bin/bash /tmp/miniconda.sh -b -p /opt/conda && chmod -R a+rwX /opt/conda
 
-# Put conda in path so we can use conda activate
+# Add Conda to PATH
 ENV PATH=$CONDA_DIR/bin:$PATH
 
-# Install mamba in the base environment
-RUN conda install -c conda-forge mamba
+# Initialize Conda
+RUN /opt/conda/bin/conda init bash
 
-# Create the genelab-utils conda environment and install dp-tools
+# Install mamba
+RUN conda install -y -c conda-forge mamba
+
+# Create genelab-utils environment and install dependencies
 RUN mamba create -n genelab-utils -y -c conda-forge -c bioconda -c defaults -c astrobiomike 'genelab-utils>=1.3.35' git pip
-RUN echo "source activate genelab-utils" > ~/.bashrc
-ENV PATH=/opt/conda/envs/genelab-utils/bin:$PATH
+
+# Activate environment for pip installs
 RUN /opt/conda/bin/conda run -n genelab-utils pip install --upgrade pyOpenSSL
 RUN /opt/conda/bin/conda run -n genelab-utils pip install git+https://github.com/torres-alexis/dp_tools.git@amplicon_updates
 
